@@ -14,7 +14,7 @@ module.exports = {
         const { email, username, password, city, state, bio } = req.body;
         console.log(req.body);
         // Check if all the parameters are provided
-        if(!email || !username || !password || !city || !state || !bio) {
+        if(!email || !username || !password || !city || !state) {
             res.json({error : true, message : "All parameters were not provided."})
         } else {
             // All parameters are provided
@@ -36,7 +36,7 @@ module.exports = {
                         password : hashedPassword,
                         city,
                         state,
-                        bio
+                        bio : !bio ? 'N/A' : bio
                     })
 
                     // Save the new user to the database
@@ -50,5 +50,11 @@ module.exports = {
                 res.json({error : true, message : err});
             }
         }
+    },
+
+    logOut : async (req, res) => {
+        req.session.destroy();
+        res.clearCookie('connect.sid')
+        res.json({error : false, message : 'Logout'})
     }
 }

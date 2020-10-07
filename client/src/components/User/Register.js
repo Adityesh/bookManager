@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField';
 import * as yup from 'yup'
-import { Button, Container, Typography } from '@material-ui/core'
+import { Button, Container, Typography, LinearProgress, Snackbar } from '@material-ui/core'
 import Card from '@material-ui/core/Card';
-import Snackbar from '@material-ui/core/Snackbar';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import { Formik } from 'formik';
 
+
+
 export default () => {
     const history = useHistory();
-
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [openErr, setOpenErr] = useState(false);
+    const [err, setErr] = useState('');
 
     const SignupSchema = yup.object().shape({
         email: yup.string().email('Invalid email').required('Email cannot be empty'),
@@ -24,9 +27,61 @@ export default () => {
 
     });
 
+    const handleRegister = async ({email, username, password, city, bio, state}) => {
+        try {
+            setLoading(true);
+            const response = await fetch('/user/register', {
+                method : 'post',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify({
+                    email,
+                    username,
+                    password,
+                    city,
+                    state,
+                    bio : !bio ? null : bio
+                })
+            })
+
+            const result = await response.json();
+            if(result.error) {
+                setLoading(false);
+                setErr(result.message);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
+            } else {
+                setOpen(true);
+                setLoading(false);
+                setTimeout(() => {
+                    setOpen(false);
+                    history.push('/login')
+                }, 2000)
+            }
+            
+            
+
+
+        } catch(err) {
+            setLoading(false);
+                setErr("Error trying to register");
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
+        }
+
+    }
+
+
     return (
-        <Container maxWidth="sm" style={{backgroundColor : '#121212'}}>
-            <Card style={{ marginTop: 50 }} variant="outlined" style={{backgroundColor : '#121212', color : 'white'}}>
+        <Container maxWidth="sm">
+            
+            <Card style={{ marginTop: 50 }} variant="outlined">
 
                 <CardContent>
                     <Typography variant="h5" component="h5" align="center">
@@ -36,7 +91,7 @@ export default () => {
                         validationSchema={SignupSchema}
                         initialValues={{ email: '', username: '', password: '', repass: '', city: '', state: '', bio: '' }}
                         onSubmit={(values, { setSubmitting }) => {
-                            console.log(values)
+                            handleRegister(values);
                         }}
                     >
                         {({
@@ -126,15 +181,26 @@ export default () => {
                                             helperText={errors.bio}
                                         />
                                     </div>
-                                    <div style={{display : 'flex', alignItems : 'center', justifyContent : 'center', marginBottom : 10}}>
+                                    <div style={{display : 'flex', alignItems : 'center', justifyContent : 'center'}}>
                                         <Button variant="contained" color="primary" style={{marginRight : 10}} onClick={resetForm}>RESET</Button>
-                                        <Button variant="contained" color="primary" style={{marginRight : 10}} type="submit">LOGIN</Button>
+                                        <Button variant="contained" color="primary" style={{marginRight : 10}} type="submit">REGISTER</Button>
                                     </div>
                                 </form>   
                             )}
                     </Formik>
                 </CardContent>
+                <LinearProgress color="primary" style={{display : loading ? 'block' : 'none'}}/>
+
             </Card>
+
+            <Snackbar open={open} autoHideDuration={6000} message="Registration success">
+            </Snackbar>
+
+            <Snackbar open={openErr} autoHideDuration={6000} message={err}>
+            </Snackbar>
+
+            
+            
             
         </Container>
     )

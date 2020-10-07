@@ -8,6 +8,10 @@ body {
     height : 100vh;
 }
 
+.App {
+    height: 100vh;
+}
+
 .MuiTextField-root p {
     color:rgb(255, 0, 0);
 }

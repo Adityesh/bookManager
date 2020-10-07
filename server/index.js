@@ -1,6 +1,8 @@
 // environment variables
 const dotenv = require('dotenv').config();
 
+const cors = require('cors')
+
 // Passport related imports
 const passport = require('passport');
 const session = require('express-session');
@@ -28,6 +30,8 @@ const app = express();
 const PORT = 5000 || process.env.PORT;
 // DB string stored in the .env file
 const DB = 'mongodb://localhost:27017/BookTrading' || process.env.DB;
+
+app.use(cors())
 
 // Use body-parser middleware for json bodies
 app.use(express.json());

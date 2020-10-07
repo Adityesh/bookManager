@@ -43,6 +43,21 @@ const App = () => {
     }
   }
 
+  const handleLogOut = async () => {
+      try {
+        const response = await fetch('/user/logout');
+        const result = await response.json();
+        if(!result.error) {
+          dispatch(logout());
+          localStorage.clear();
+        }
+
+      } catch(err) {
+        console.log(err);
+      }
+  
+  }
+
   return (
     <div className={isDark ? 'bg-dark' + ' App' : 'bg-light' + ' App'} style={{ height: '100%'}}>
       <Router>
@@ -61,7 +76,7 @@ const App = () => {
                     <IconButton style={{ color: "black", marginRight: 10 }} component="span">
                       <Link to="/profile"><AccountBoxIcon/></Link>
                     </IconButton>
-                    <IconButton style={{ color: "black", marginRight: 10 }} component="span" onClick={() => dispatch(logout())}>
+                    <IconButton style={{ color: "black", marginRight: 10 }} component="span" onClick={handleLogOut}>
                       <ExitToAppIcon/>
                     </IconButton>
                   </div>

@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Import userController functions
 const userController = require('../controller/userController');
-
+const isAuth = require('../middleware/isAuthenticated');
 // Register route
 router.post('/register', userController.registerUser);
 
@@ -34,6 +34,12 @@ router.get('/success', (req, res) => {
 // Failure route
 router.get('/failure', (req, res) => {
     res.json({error : true, message : "Login not succesful, Check your credentials."});
+})
+
+router.get('/logout', isAuth,  userController.logOut);
+
+router.get('/getBooks', isAuth, (req, res) => {
+    res.json('data');
 })
 
 

@@ -2,38 +2,90 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField';
 import * as yup from 'yup'
-import { Button, Container, Typography } from '@material-ui/core'
+import { Button, Container, Typography, Snackbar, LinearProgress } from '@material-ui/core'
 import { Formik } from 'formik';
 import {useSelector, useDispatch} from 'react-redux';
 import { login, logout } from '../../actions/LogIn';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 
 export default () => {
     const dispatch = useDispatch();
     const isLoggedIn = useSelector(state => state.isLoggedIn);
     const isDark = useSelector(state => state.isDark);
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [openErr, setOpenErr] = useState(false);
+    const [err, setErr] = useState('');
     const history = useHistory();
     const SignupSchema = yup.object().shape({
         email: yup.string().required('Email cannot be empty'),
         password: yup.string().required('Password cannot be empty'),
     });
 
-    
+    const handleLogin = async ({email, password}) => {
+        try {
+            setLoading(true);
+            const response = await fetch('/user/login', {
+                method : 'post',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify({
+                    email,
+                    password
+                })
+            })
+
+            const result = await response.json();
+            console.log(result)
+            if(result.error) {
+                setLoading(false);
+                setErr(result.message);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
+            } else {
+                setOpen(true);
+                setLoading(false);
+                localStorage.setItem('user', JSON.stringify(result.user))
+                setTimeout(() => {
+                    setOpen(false);
+                    dispatch(login());
+                    history.push('/home')
+                }, 2000)
+            }
+            
+            
+
+
+        } catch(err) {
+            setLoading(false);
+                setErr("Error trying to login");
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
+        }
+
+    }
     
     return (
         <Container maxWidth="sm" style={{marginTop : 10}}>
             
-
-                <div style={{padding : '0 20px'}} >
-                <Typography variant="h5" component="h5" align="center" style={{color : isDark ? 'white' : 'black'}}>
+            <Card style={{ marginTop: 50 }} variant="outlined">
+            <CardContent>
+                <Typography variant="h5" component="h5" align="center" >
                         Login to your account
                 </Typography>
                     <Formik
                         validationSchema={SignupSchema}
                         initialValues={{ email: '', password: ''}}
                         onSubmit={(values, { setSubmitting }) => {
-                            dispatch(login());
-                            history.push('/home')
+                            handleLogin(values);
                         }}
                     >
                         {({
@@ -65,6 +117,7 @@ export default () => {
                                             fullWidth
                                             error={false}
                                             label="Password"
+                                            type="password"
                                             onChange={handleChange('password')}
                                             value={values.password}
                                             helperText={errors.password}
@@ -80,8 +133,15 @@ export default () => {
                             )}
 
                     </Formik>
-                </div>
-            
+                    </CardContent>
+                    <LinearProgress color="primary" style={{display : loading ? 'block' : 'none'}}/>
+
+            </Card>
+            <Snackbar open={open} autoHideDuration={6000} message="Login success">
+            </Snackbar>
+
+            <Snackbar open={openErr} autoHideDuration={6000} message={err}>
+            </Snackbar>
             
             </Container>
     )
