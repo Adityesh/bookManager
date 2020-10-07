@@ -1,0 +1,40 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    height : 100vh;
+}
+
+.MuiTextField-root p {
+    color:rgb(255, 0, 0);
+}
+
+a {
+    display: inline;
+    text-decoration: none;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+
+.bg-dark {
+    background-color: #121212;
+    transition: background-color 0.3s linear;
+}
+
+.bg-light {
+    background-color: white;
+    transition: background-color 0.3s linear;
+}
+
+
+.textinput-dark {
+    color : 'white'
+}
+
+.textinput-light {
+    color : 'black';
+}
