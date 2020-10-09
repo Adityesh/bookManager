@@ -42,9 +42,7 @@ export default (props) => {
 <Tab><Button color="primary" style={{ color: isDark ? '#3f51b5' : 'black' }}>
                                 Your Books
 </Button></Tab>
-                            <Tab><Button color="primary" style={{ color: isDark ? '#3f51b5' : 'black' }}>
-                                Requested
-</Button></Tab>
+
                             <Tab><Button color="primary" style={{ color: isDark ? '#3f51b5' : 'black' }}>
                                 Trade Requests
 </Button></Tab>
@@ -56,12 +54,10 @@ export default (props) => {
                         <TabPanel>
                             <Books />
                         </TabPanel>
-                        <TabPanel>
+                        <TabPanel forceRender>
                             <UserBooks />
                         </TabPanel>
-                        <TabPanel>
-                            <h2>Any content 2</h2>
-                        </TabPanel>
+
                         <TabPanel>
                             <h2>Any content 3</h2>
                         </TabPanel>

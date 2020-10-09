@@ -80,11 +80,11 @@ const Books = () => {
             username : user.username,
             email : user.email,
             bookTitle : item.volumeInfo.title,
-            bookAuthor : !item.volumeInfo.authors[0] ? 'N/A' : item.volumeInfo.authors[0],
+            bookAuthor : !item.volumeInfo.authors ? 'N/A' : item.volumeInfo.authors[0],
             bookDate : !item.volumeInfo.publishedDate ? 'N/A' : item.volumeInfo.publishedDate,
             bookDescription : !item.volumeInfo.subtitle ? 'No description available' : item.volumeInfo.subtitle,
             bookUrl : !item.volumeInfo.imageLinks.thumbnail ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/No_image_available_450_x_600.svg/450px-No_image_available_450_x_600.svg.png' : item.volumeInfo.imageLinks.thumbnail,
-            pageCount : !item.volumeInfo.pageCount ? 'N/A' : item.volumeInfo.pageCount
+            pageCount : !item.volumeInfo.pageCount ? 0 : item.volumeInfo.pageCount
         }
 
         try {
@@ -103,6 +103,7 @@ const Books = () => {
                 setBtnDisable(false);
             } else {
                 // Show snackbar if error
+                console.log(result)
             }
             
             
@@ -154,7 +155,7 @@ const Books = () => {
                             
                             <CardMedia
                                 className={classes.media}
-                                image={item.volumeInfo.imageLinks.thumbnail}
+                                image={!item.volumeInfo.imageLinks ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/No_image_available_450_x_600.svg/450px-No_image_available_450_x_600.svg.png' : item.volumeInfo.imageLinks.thumbnail}
                                 title="Contemplative Reptile"
                             />
                             
@@ -163,14 +164,18 @@ const Books = () => {
                                     {item.volumeInfo.title}
           </Typography>
           <Typography gutterBottom variant="span" component="span">
-                                    Pages : {item.volumeInfo.pageCount}
+                                    Pages : {!item.volumeInfo.pageCount ? 'N/A' : item.volumeInfo.pageCount}
           </Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
                                     {!item.volumeInfo.subtitle ? 'No description available' : item.volumeInfo.subtitle}
           </Typography>
                             </CardContent>
                         </CardActionArea>
-                        
+                        <CardActions style={{display : 'flex', alignItem : 'center', justifyContent : 'center'}}>
+                            <Button size="large" variant="contained" color="primary" onClick={() => handleAddBook(item)} disabled={btnDisable}>
+                                ADD
+                            </Button>
+                        </CardActions>
                     </Card>
                         )
                     })}

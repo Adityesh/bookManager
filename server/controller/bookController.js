@@ -20,7 +20,6 @@ module.exports = {
         //     isRequested : {type : Boolean, default : false}
         // }, {versionKey : false})
 
-        console.log(req.body);
         const { username, bookTitle, bookAuthor, bookDate, bookDescription, bookUrl, pageCount, email} = req.body;
 
         // Check if all parameters were provided or not
@@ -61,5 +60,34 @@ module.exports = {
         }
 
 
+    },
+
+    getBooks : async (req, res) => {
+        const {username, email} = req.body;
+
+        // Check if all the parameters are provided or not
+        if(!username || !email) {
+            res.json({error : true, message : "One or more parameters missing"});
+        } else {
+            // All parameters provided
+            try {
+                const user = await User.findOne({email, username});
+                if(!user) {
+                    // No user with the given email and username
+                    res.json({error : true, message : "No user found"})
+                } else {
+                    // User valid
+                    const id = user._id;
+                    const books = await UserBooks.find({userId : id});
+                    if(!books) {
+                        res.json({error :false, message : 'No books found'});
+                    } else {
+                        res.json({error : false, message : "All books", books : books});
+                    }
+                }
+            } catch (err) {
+                res.json({error : true, message : err});
+            }
+        }
     }
 }
