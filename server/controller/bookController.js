@@ -20,7 +20,7 @@ module.exports = {
         //     isRequested : {type : Boolean, default : false}
         // }, {versionKey : false})
 
-
+        console.log(req.body);
         const { username, bookTitle, bookAuthor, bookDate, bookDescription, bookUrl, pageCount, email} = req.body;
 
         // Check if all parameters were provided or not
@@ -44,10 +44,9 @@ module.exports = {
                         bookTitle,
                         bookAuthor,
                         bookDate,
-                        bookCount,
+                        pageCount,
                         bookDescription,
                         bookUrl,
-                        pageCount,
                         tradeUser : '',
                         isRequested : false
                     })

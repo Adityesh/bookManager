@@ -15,6 +15,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Books from '../Tabs/Books';
+import UserBooks from '../Tabs/UserBooks';
 
 
 
@@ -56,7 +57,7 @@ export default (props) => {
                             <Books />
                         </TabPanel>
                         <TabPanel>
-                            <h2>Your Books content 2</h2>
+                            <UserBooks />
                         </TabPanel>
                         <TabPanel>
                             <h2>Any content 2</h2>
