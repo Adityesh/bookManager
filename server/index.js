@@ -14,6 +14,8 @@ const authenticate = require('./middleware/authenticate');
 // Import user Route
 const userRoute = require('./routes/userRoute');
 
+// Import book Route
+const booksRoute = require('./routes/booksRoute');
 
 // Require express
 const express = require('express');
@@ -59,11 +61,11 @@ mongoose.connect(DB, {useNewUrlParser : true, useUnifiedTopology : true});
 // Check if the database has been connected or not
 db.once('open', () => console.log(`Connected to the database..`))
 
-app.get('/profile', require('./middleware/isAuthenticated', (req, res) => {
-    console.log(req.user);
-}))
-
+// User Route
 app.use('/user', userRoute);
+
+// Books Route
+app.use('/books', booksRoute);
 
 // Listen on port 5000 for dev and not on production
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
