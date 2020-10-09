@@ -58,6 +58,8 @@ const App = () => {
   
   }
 
+
+
   return (
     <div className={isDark ? 'bg-dark' + ' App' : 'bg-light' + ' App'} style={{ height: '100%'}}>
       <Router>
@@ -70,13 +72,13 @@ const App = () => {
 
                 <>
                   <div style={{display : 'flex', alignItems : 'center', justifyContent : 'center'}}>
-                    <IconButton style={{ color: "black", marginRight: 10 }} component="span">
-                      <Link to="/home"><LibraryBooksIcon/></Link>
+                    <IconButton style={{ color: isDark ? "white" : "black", marginRight: 10 }}>
+                      <Link to="/home" style={{color: isDark ? "white" : "black"}}><LibraryBooksIcon/></Link>
                     </IconButton>
-                    <IconButton style={{ color: "black", marginRight: 10 }} component="span">
-                      <Link to="/profile"><AccountBoxIcon/></Link>
+                    <IconButton style={{ color: isDark ? "white" : "black", marginRight: 10 }} >
+                      <Link to="/profile" style={{color: isDark ? "white" : "black"}}><AccountBoxIcon/></Link>
                     </IconButton>
-                    <IconButton style={{ color: "black", marginRight: 10 }} component="span" onClick={handleLogOut}>
+                    <IconButton style={{ color: isDark ? "white" : "black", marginRight: 10, paddingBottom : 10 }} component="span" onClick={handleLogOut}>
                       <ExitToAppIcon/>
                     </IconButton>
                   </div>
@@ -86,17 +88,17 @@ const App = () => {
                 :
                 <>
                   <div >
-                    <Button style={{ color: "black", marginRight: 10 }} component="span">
-                      <Link to="/login">Login</Link>
+                    <Button style={{ color: isDark ? "white" : "black", marginRight: 10 }} component="span">
+                      <Link to="/login" style={{color: isDark ? "white" : "black"}}>Login</Link>
                     </Button>
-                    <Button style={{ color: "black", marginRight: 10 }} component="span">
-                      <Link to="/register">Register</Link>
+                    <Button style={{ color: isDark ? "white" : "black", marginRight: 10 }} component="span">
+                      <Link to="/register" style={{color: isDark ? "white" : "black"}}>Register</Link>
                     </Button>
                   </div>
 
                 </>}
 
-              <IconButton style={{ color: "black", marginRight: 10 }} aria-label="upload picture" component="span" onClick={changeTheme}>
+              <IconButton style={{ color: isDark ? "white" : "black", marginRight: 10 }} aria-label="upload picture" component="span" onClick={changeTheme}>
                 {isDark ? <Brightness7Icon /> : <Brightness4Icon />}
               </IconButton>
             </Toolbar>

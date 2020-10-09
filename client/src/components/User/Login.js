@@ -137,7 +137,7 @@ export default () => {
                     <LinearProgress color="primary" style={{display : loading ? 'block' : 'none'}}/>
 
             </Card>
-            <Snackbar open={open} autoHideDuration={6000} message="Login success">
+            <Snackbar open={open} autoHideDuration={6000} anchorOrigin={{vertical : 'bottom', horizontal : 'center'}} message="Login success">
             </Snackbar>
 
             <Snackbar open={openErr} autoHideDuration={6000} message={err}>

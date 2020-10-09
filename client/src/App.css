@@ -17,7 +17,9 @@ body {
 }
 
 a {
-    display: inline;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
     color: black;
     margin: 0;
@@ -26,13 +28,16 @@ a {
 
 .bg-dark {
     background-color: #121212;
+    color : white;
     transition: background-color 0.3s linear;
 }
 
 .bg-light {
     background-color: white;
+    color : black;
     transition: background-color 0.3s linear;
 }
+
 
 
 .textinput-dark {
@@ -42,3 +47,23 @@ a {
 .textinput-light {
     color : 'black';
 }
+
+.my-masonry-grid {
+    display: -webkit-box; /* Not needed if autoprefixing */
+    display: -ms-flexbox; /* Not needed if autoprefixing */
+    display: flex;
+    margin-left: -30px; /* gutter size offset */
+    width: auto;
+    overflow-y: scroll;
+    height: 600px;
+  }
+  .my-masonry-grid_column {
+    padding-left: 30px; /* gutter size */
+    background-clip: padding-box;
+  }
+   
+  /* Style your items */
+  .my-masonry-grid_column > div { /* change div to reference your elements you put in <Masonry> */
+    background: grey;
+    margin-bottom: 30px;
+  }

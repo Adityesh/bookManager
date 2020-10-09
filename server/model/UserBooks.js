@@ -9,7 +9,7 @@ const userBookSchema = mongoose.Schema({
     username : {type : String, required : true},
     bookTitle : {type : String, required : true},
     bookAuthor : {type : String, required : true},
-    bookPublisher : {type : String, required : true},
+    bookDate : {type : String, required : true},
     bookDescription : {type : String, requried :true},
     bookUrl : {type : String, required : true},
     pageCount : {type : Number, required : true},
