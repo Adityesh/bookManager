@@ -104,6 +104,7 @@ const Books = () => {
             } else {
                 // Show snackbar if error
                 console.log(result)
+                setBtnDisable(false);
             }
             
             

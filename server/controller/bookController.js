@@ -37,21 +37,27 @@ module.exports = {
                 } else {
                     // Valid user
                     // Insert a new book for the given user
-                    const newBook = new UserBooks({
-                        userId : user._id,
-                        username : username,
-                        bookTitle,
-                        bookAuthor,
-                        bookDate,
-                        pageCount,
-                        bookDescription,
-                        bookUrl,
-                        tradeUser : '',
-                        isRequested : false
-                    })
-
-                    await newBook.save();
-                    res.json({error : false, message : "New Book Added"})
+                    // Check if the book already exists in the database
+                    const book = await UserBooks.findOne({userId : user._id, bookTitle, bookAuthor, bookDescription});
+                    if(book) res.json({error : true, message : "Book already exists."})
+                    else {
+                        const newBook = new UserBooks({
+                            userId : user._id,
+                            username : username,
+                            bookTitle,
+                            bookAuthor,
+                            bookDate,
+                            pageCount,
+                            bookDescription,
+                            bookUrl,
+                            tradeUser : '',
+                            isRequested : false
+                        })
+    
+                        await newBook.save();
+                        res.json({error : false, message : "New Book Added"})
+                    }
+                    
                 }
             } catch(err) {
                 console.log(err);
