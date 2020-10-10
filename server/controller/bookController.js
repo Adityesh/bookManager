@@ -111,5 +111,59 @@ module.exports = {
         } catch(err) {
             res.json({error : true, message : err})
         }
+    },
+
+    requestBook : (req, res) => {
+        // Get the email of both the person and the bookTitle of the book
+        const { requestEmail, userEmail, bookTitle, requestUsername } = req.body;
+
+        if(!requestEmail || !userEmail || !bookTitle) {
+            res.json({error : true, message : "One or more parameters were not provided."})
+        } else {
+            // All parameters were provided
+            // Check if the requestEmail has the book with the bookTitle
+            try {
+                const books = await UserBooks.findOne({email : requestEmail, bookTitle, username : requestUsername});
+                if(!books) {
+                    // No book available
+                    res.json({error : true, message : "No book found."});
+                } else {
+                    // Book found 
+                    // Check if its requested or not and the trade user field is empty or not
+                    const flag = (!books.isRequested && books.tradeUser.length === 0) ? true : false;
+                    if(flag) {
+                        // Book can be requested for trade
+                        // Set the isRequested flag to true and put trade user for the email of the requesting user
+                        // Add the book to the incoming requests of the user with the book
+                        books.isRequested = true;
+                        books.tradeUser = userEmail; // User email is the user requesting the book
+                        const requestedUser = await User.findOne({_id : books.userId, email}); // User to be traded with
+                        const tradeUser = await User.findOne({email : userEmail}); // User who wants to trade
+                        requestedUser.incomingRequests.push({
+
+                            userId : tradeUser._id,
+                            username : tradeUser.username,
+                            email : tradeUser.email,
+                            bookTitle : bookTitle,
+                            bookAuthor : books.bookAuthor,
+                            bookUrl : books.bookUrl,
+                            bookDescription : books.bookDescription,
+                            bookDate : books.bookDate,
+                            pageCount : books.pageCount,
+                            accepted : false
+                        });
+                        await requestedUser.save();
+                        await books.save();
+
+                        res.json({error : false, message : "Book requested successfully"})
+
+                    } else {
+                        res.json({error : true, message : "Book is not available for trade."})
+                    }
+                }
+            } catch(err) {
+                res.json({error : true, message : err});
+            }
+        }
     }
 }

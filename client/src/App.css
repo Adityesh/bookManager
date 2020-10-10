@@ -76,7 +76,7 @@ a {
     margin-left: -30px; /* gutter size offset */
     width: auto;
     overflow-y: scroll;
-    height: 900px;
+    height: 800px;
   }
   
   .my-masonry-grid_column2 {
