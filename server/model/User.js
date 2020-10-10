@@ -38,6 +38,7 @@ const userSchema = mongoose.Schema({
             bookDescription : {type : String, requried :true},
             bookUrl : {type : String, required : true},
             pageCount : {type : Number, required : true},
+            status : {type : String, default : 'Pending'},
         }
     ]
 }, { versionKey: false })

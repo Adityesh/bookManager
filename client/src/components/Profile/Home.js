@@ -50,11 +50,22 @@ export default (props) => {
     }, [books]);
 
     const getAllBooks = async () => {
+        const user = JSON.parse(localStorage.getItem('user'));
         try {
 
-            const response = await fetch('/books/allbooks');
+            const response = await fetch('/books/allbooks',  {
+                method : 'post',
+                headers : {
+                    'Accept' : 'application/json',
+                    'Content-Type' : 'application/json',
+                },
+                body : JSON.stringify({
+                    username : user.username,
+                    email : user.email
+                })
+            });
             const result = await response.json();
-
+            console.log(result);
             if (!result.error) {
                 setBooks(result.books);
             } else {
@@ -67,7 +78,6 @@ export default (props) => {
 
     const handleRequestBook = async (item) => {
         const user = JSON.parse(localStorage.getItem('user'));
-        console.log(item.username)
         const body = {
             requestEmail : item.email, // User who is requesting
             bookTitle : item.bookTitle,

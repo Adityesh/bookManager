@@ -1,4 +1,5 @@
 // User Model for registering the user
+const { request } = require('express');
 const User = require('../model/User');
 const UserBooks = require('../model/UserBooks');
 // Import bcrypt for hashing the password
@@ -113,6 +114,31 @@ module.exports = {
         }
     },
 
+    getAllBooksForAuthUser : async (req, res) => {
+        const {username, email} = req.body; 
+        if(!username || !email) {
+            res.json({error : true, message : "One or more parameters are missing"})
+        } else {
+            // Get all books by all user
+            try {
+                const books = await UserBooks.find({});
+                if(!books) {
+                    res.json({error : true, message : "No books found in the database"})
+                } else {
+                    const booksRes = books.filter((book, index) => {
+                        return book.username !== username && book.email !== email && book.isRequested === false && book.tradeUser.length === 0;
+                    })
+
+                    res.json({error : false, message : "Success", books : booksRes});
+                }
+            } catch(err) {
+                res.json({error : true, message : "Internal server error"})
+            }
+        }
+    },
+
+
+
     requestBook : async (req, res) => {
         // Get the email of both the person and the bookTitle of the book
         const { requestEmail, userEmail, bookTitle, requestUsername } = req.body;
@@ -130,6 +156,7 @@ module.exports = {
                 } else {
                     // Book found 
                     // Check if its requested or not and the trade user field is empty or not
+                    
                     const flag = (!books.isRequested && books.tradeUser.length === 0) ? true : false;
                     if(flag) {
                         // Book can be requested for trade
@@ -139,6 +166,7 @@ module.exports = {
                         books.tradeUser = userEmail; // User email is the user requesting the book
                         const requestedUser = await User.findOne({_id : books.userId, email : requestEmail}); // User to be traded with
                         const tradeUser = await User.findOne({email : userEmail}); // User who wants to trade
+                        // Add the request in the requestUser's request array
                         requestedUser.incomingRequests.push({
 
                             userId : tradeUser._id,
@@ -152,6 +180,23 @@ module.exports = {
                             pageCount : books.pageCount,
                             accepted : false
                         });
+
+                        // Add the request to the outgoing requests array of the user willing to trade
+                        tradeUser.outgoingRequests.push({
+                            userId : books.userId,
+                            username : books.username,
+                            email : books.email,
+                            accepted : false,
+                            bookTitle : books.bookTitle,
+                            bookAuthor : books.bookAuthor,
+                            bookDate : books.bookDate,
+                            bookDescription : books.bookDescription,
+                            bookUrl : books.bookUrl,
+                            pageCount : books.pageCount
+
+                        })
+
+                        await tradeUser.save();
                         await requestedUser.save();
                         await books.save();
 
@@ -164,6 +209,38 @@ module.exports = {
             } catch(err) {
                 console.log(err);
                 res.json({error : true, message : err});
+            }
+        }
+    },
+
+
+    getRequests : async (req, res) => {
+        const {username, email} = req.body;
+        
+
+        if(!username || !email) {
+            res.json({error : true, message : "One or more parameters missing."});
+        } else {
+            try {
+                // Get the user for the given email and username
+                const user = await User.findOne({email, username});
+                if(!user) {
+                    // No user found
+                    res.json({error : true, message : "No user found."})
+                } else {
+                    // User is found
+                    // Get the requests array and send it
+                    const requests = user.incomingRequests
+                    if(requests.length === 0) {
+                        res.json({error : false, message : "No trade requests."})
+                    } else {
+                        res.json({error : false, message : "Success", requests : requests});
+                    }
+                }
+
+            } catch(err) {
+                console.log(err);
+                res.json({error : true, message : "Internal server error."})
             }
         }
     }

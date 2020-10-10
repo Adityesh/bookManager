@@ -16,10 +16,15 @@ const booksController = require('../controller/bookController');
 router.post('/new', isAuth, booksController.newBook);
 // All Books Route for a particular user
 router.post('/all', isAuth,  booksController.getBooks);
-// All Books for unauthenticated users and authenticated user alike
-router.get('/allbooks', booksController.getAllBooks);
+// All Books for authenticated user 
+router.post('/allbooks', isAuth, booksController.getAllBooksForAuthUser);
+// Get all books for the unauthenticated user
+router.get('/all', booksController.getAllBooks);
 // Request books trade
 router.post('/new/request', isAuth, booksController.requestBook);
+
+// Get all requests for a particular user
+router.post('/all/requests', isAuth, booksController.getRequests);
 
 // Export the router handler;
 module.exports = router;
