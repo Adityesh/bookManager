@@ -243,5 +243,37 @@ module.exports = {
                 res.json({error : true, message : "Internal server error."})
             }
         }
+    },
+
+
+    getOutgoingRequests : async (req, res) => {
+        const {username, email} = req.body;
+        
+
+        if(!username || !email) {
+            res.json({error : true, message : "One or more parameters missing."});
+        } else {
+            try {
+                // Get the user for the given email and username
+                const user = await User.findOne({email, username});
+                if(!user) {
+                    // No user found
+                    res.json({error : true, message : "No user found."})
+                } else {
+                    // User is found
+                    // Get the requests array and send it
+                    const requests = user.outgoingRequests;
+                    if(requests.length === 0) {
+                        res.json({error : false, message : "No trade requests."})
+                    } else {
+                        res.json({error : false, message : "Success", requests : requests});
+                    }
+                }
+
+            } catch(err) {
+                console.log(err);
+                res.json({error : true, message : "Internal server error."})
+            }
+        }
     }
 }

@@ -26,5 +26,8 @@ router.post('/new/request', isAuth, booksController.requestBook);
 // Get all requests for a particular user
 router.post('/all/requests', isAuth, booksController.getRequests);
 
+// Get all outgoing requests for a particular user
+router.post('/all/outgoing', isAuth, booksController.getOutgoingRequests);
+
 // Export the router handler;
 module.exports = router;

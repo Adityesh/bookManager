@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,45 +7,38 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { LinearProgress } from '@material-ui/core'
+import { LinearProgress } from '@material-ui/core';
+import TimerIcon from '@material-ui/icons/Timer';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
+import { green, blue } from '@material-ui/core/colors';
 
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white,
     },
     body: {
-      fontSize: 14,
+        fontSize: 14,
     },
 }))(TableCell);
-  
-  const StyledTableRow = withStyles((theme) => ({
+
+const StyledTableRow = withStyles((theme) => ({
     root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-      },
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+        },
     },
 }))(TableRow);
 
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 
 const useStyles = makeStyles({
     table: {
-      minWidth: 700,
+        minWidth: 700,
     },
-  });
+});
 
 export default () => {
     const [isLoading, setLoading] = useState(false);
@@ -63,6 +56,37 @@ export default () => {
     }, [searchBooks]);
 
 
+    const getOutgoingRequests = async () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        try {
+            const response = await fetch('/books/all/outgoing', {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: user.username,
+                    email: user.email
+                })
+            });
+
+            const result = await response.json();
+            console.log(result);
+            if (!result.error) {
+                setSearchBooks(result.requests.reverse());
+
+            } else {
+                // Show snackbar and error
+
+
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+
 
     const classes = useStyles();
     return (
@@ -70,28 +94,53 @@ export default () => {
             <LinearProgress color="primary" style={{ display: isLoading ? 'block' : 'none' }} />
 
             <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="customized table">
+                <Table stickyHeader className={classes.table} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <StyledTableCell>Dessert (100g serving)</StyledTableCell>
-                            <StyledTableCell align="right">Calories</StyledTableCell>
-                            <StyledTableCell align="right">Fat&nbsp;(g)</StyledTableCell>
-                            <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
-                            <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
+                            <StyledTableCell>To</StyledTableCell>
+                            <StyledTableCell ></StyledTableCell>
+                            <StyledTableCell >Book Title</StyledTableCell>
+                            <StyledTableCell >Book Author</StyledTableCell>
+                            <StyledTableCell >Publish Date</StyledTableCell>
+                            <StyledTableCell >Page Count</StyledTableCell>
+                            <StyledTableCell >Status</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
-                            <StyledTableRow key={row.name}>
+                        {searchBooks.length > 0 ? searchBooks.map((book, index) => (
+                            <StyledTableRow key={index}>
                                 <StyledTableCell component="th" scope="row">
-                                    {row.name}
+                                    {book.username}
                                 </StyledTableCell>
-                                <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                                <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                                <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                                <StyledTableCell align="right">{row.protein}</StyledTableCell>
+                                <StyledTableCell ><img sizes='' src={book.bookUrl} height={60} width={30} /></StyledTableCell>
+                                <StyledTableCell >{book.bookTitle}</StyledTableCell>
+
+                                <StyledTableCell >{book.bookAuthor}</StyledTableCell>
+                                <StyledTableCell >{book.bookDate}</StyledTableCell>
+                                <StyledTableCell >{book.pageCount}</StyledTableCell>
+                                <StyledTableCell >
+                                    <div style={{display : 'flex', alignItems : 'center', justifyContent : 'center'}}>
+                                    
+                                    {(() => {
+                                        if (book.status === 'Pending') {
+                                            return (
+                                                <TimerIcon style={{ color: blue[500], fontSize : 30 }}/>
+                                            )
+                                        } else if (book.status === 'Accepted') {
+                                            return (
+                                                <CheckCircleIcon fontSize={'small'} style={{ color: green[500],  fontSize : 30 }}/>
+                                            )
+                                        } else {
+                                            return (
+                                                <CancelIcon fontSize={'small'} color="secondary" style={{fontSize : 30 }}/>
+                                            )
+                                        }
+                                    })()}
+                                    {book.status}
+                                    </div>
+                                </StyledTableCell>
                             </StyledTableRow>
-                        ))}
+                        )) : null}
                     </TableBody>
                 </Table>
             </TableContainer>
