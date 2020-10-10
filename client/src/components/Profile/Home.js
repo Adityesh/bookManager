@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom'
 import Masonry from 'react-masonry-css'
 import 'react-tabs/style/react-tabs.css';
-import { Container} from '@material-ui/core';
+import { Container, Button} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
@@ -37,7 +38,7 @@ export default (props) => {
     const [books, setBooks] = useState([]);
     const classes = useStyles();
 
-    
+
 
     useEffect(() => {
         Promise.resolve(getAllBooks());
@@ -50,16 +51,43 @@ export default (props) => {
 
     const getAllBooks = async () => {
         try {
-            
-            const response = await fetch('http://localhost:5000/books/allbooks');
+
+            const response = await fetch('/books/allbooks');
             const result = await response.json();
-            
-            if(!result.error) {
+
+            if (!result.error) {
                 setBooks(result.books);
             } else {
                 setBooks([]);
             }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const handleRequestBook = async (item) => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        console.log(item.username)
+        const body = {
+            requestEmail : item.email, // User who is requesting
+            bookTitle : item.bookTitle,
+            userEmail : user.email, // Logged in user
+            requestUsername : item.username
+        }
+
+        try {
+            const response = await fetch('/books/new/request', {
+                method : 'post',
+                headers : {
+                    'Accept' : 'application/json',
+                    'Content-Type' : 'application/json',
+                },
+                body : JSON.stringify(body)
+            })
+            const result = await response.json();
+            console.log(result);
         } catch(err) {
+            // Display a snackbar later
             console.log(err);
         }
     }
@@ -68,18 +96,17 @@ export default (props) => {
 
 
     const history = useHistory();
-    if(props.logged) {
-        return(
+    if (props.logged) {
+        return (
             <Container maxWidth="lg" className="home">
                 <Masonry
-                style={{marginTop : 20}}
+                    style={{ marginTop: 20 }}
                     breakpointCols={breakpointColumnsObj}
                     className="my-masonry-grid2"
                     columnClassName="my-masonry-grid_column2"
                 >
 
                     {!books.length === 0 ? 'No Books Found' : books.map((item, index) => {
-
 
                         return (
                             <Card key={index} className={classes.root}>
@@ -92,18 +119,25 @@ export default (props) => {
                                     />
 
                                     <CardContent className={classes.content}>
-                                        <Typography gutterBottom variant="h5" component="h2">
+                                        <Typography>
                                             {item.bookTitle}
                                         </Typography>
-                                        <Typography gutterBottom variant="span" component="span">
+                                        <Typography>
                                             Pages : {item.pageCount}
                                         </Typography>
-                                        <Typography variant="body2" color="textSecondary" component="p">
+                                        <Typography  color="textSecondary" component="p">
                                             {!item.bookDescription ? 'No description available' : item.bookDescription}
+                                        </Typography>
+                                        <Typography  color="textSecondary" component="p" style={{ fontWeight: 'bold' }}>
+                                            User : {item.username}
                                         </Typography>
                                     </CardContent>
                                 </CardActionArea>
-
+                                <CardActions style={{ display: 'flex', alignItem: 'center', justifyContent: 'center' }}>
+                                    <Button size="large" variant="contained" color="primary"  onClick={() => handleRequestBook(item)}>
+                                        Request from {item.username}
+                            </Button>
+                                </CardActions>
                             </Card>
                         )
                     })}
@@ -114,7 +148,7 @@ export default (props) => {
     } else {
         history.push('/login')
         return null;
-        
+
     }
-    
+
 }

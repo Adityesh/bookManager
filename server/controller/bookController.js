@@ -113,10 +113,10 @@ module.exports = {
         }
     },
 
-    requestBook : (req, res) => {
+    requestBook : async (req, res) => {
         // Get the email of both the person and the bookTitle of the book
         const { requestEmail, userEmail, bookTitle, requestUsername } = req.body;
-
+        
         if(!requestEmail || !userEmail || !bookTitle) {
             res.json({error : true, message : "One or more parameters were not provided."})
         } else {
@@ -137,7 +137,7 @@ module.exports = {
                         // Add the book to the incoming requests of the user with the book
                         books.isRequested = true;
                         books.tradeUser = userEmail; // User email is the user requesting the book
-                        const requestedUser = await User.findOne({_id : books.userId, email}); // User to be traded with
+                        const requestedUser = await User.findOne({_id : books.userId, email : requestEmail}); // User to be traded with
                         const tradeUser = await User.findOne({email : userEmail}); // User who wants to trade
                         requestedUser.incomingRequests.push({
 
@@ -162,6 +162,7 @@ module.exports = {
                     }
                 }
             } catch(err) {
+                console.log(err);
                 res.json({error : true, message : err});
             }
         }
