@@ -44,6 +44,7 @@ module.exports = {
                         const newBook = new UserBooks({
                             userId : user._id,
                             username : username,
+                            email,
                             bookTitle,
                             bookAuthor,
                             bookDate,
@@ -94,6 +95,21 @@ module.exports = {
             } catch (err) {
                 res.json({error : true, message : err});
             }
+        }
+    },
+
+
+    getAllBooks : async (req, res) => {
+        // Get all books by all user to display in the home page
+        try {
+            const books = await UserBooks.find({isRequested : false});
+            if(!books) {
+                res.json({error : true, message : "No books found"});
+            } else {
+                res.json({error : false, message : "Success", books});
+            }
+        } catch(err) {
+            res.json({error : true, message : err})
         }
     }
 }

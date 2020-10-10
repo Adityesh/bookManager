@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const userBookSchema = mongoose.Schema({
     userId : {type : String, required : true},
     username : {type : String, required : true},
+    email : {type : String, required : true},
     bookTitle : {type : String, required : true},
     bookAuthor : {type : String, required : true},
     bookDate : {type : String, required : true},
