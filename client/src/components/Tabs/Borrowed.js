@@ -89,33 +89,35 @@ export default () => {
 
     const handleReturn = async (book) => {
         const {bookTitle, email} = book;
-        // const user = JSON.parse(localStorage.getItem('user'));
-        // try {
-        //     const response = await fetch('/books/incoming/respond', {
-        //         method : 'post',
-        //         headers : {
-        //             'Accept' : 'application/json',
-        //             'Content-Type' : 'application/json'
-        //         },
-        //         body : JSON.stringify({
-        //             flag : flag,
-        //             bookTitle,
-        //             requestUserEmail : email,
-        //             signedUserEmail : user.email
-        //         })
-        //     });
+        const user = JSON.parse(localStorage.getItem('user'));
 
-        //     const result = await response.json();
-        //     if (!result.error) {
+        try {
+            const response = await fetch('/books/return', {
+                method : 'post',
+                headers : {
+                    'Accept' : 'application/json',
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify({
+                    
+                    bookTitle,
+                    requestUserEmail : email,
+                    signedUserEmail : user.email
+                })
+            });
 
-        //     } else {
-        //         // Show snackbar and error
+            const result = await response.json();
+            console.log(result);
+            if (!result.error) {
+
+            } else {
+                // Show snackbar and error
 
 
-        //     }
-        // } catch(err) {
-        //     console.log(err);
-        // }
+            }
+        } catch(err) {
+            console.log(err);
+        }
     }
 
 

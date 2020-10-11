@@ -367,5 +367,51 @@ module.exports = {
                 res.json({error : false, message : 'Books found', books : user.borrowed.length === 0 ? [] : user.borrowed});
             }
         }
+    },
+
+
+    returnBook : async (req, res) => {
+        const {signedUserEmail, requestUserEmail, bookTitle} = req.body;
+        // SigneduserEmail is the user logged in who has the borrowed books
+        // requestEmail is the user whose book is in the borrowed list of the signedUser
+        // bookTitle is the book which is borrowed
+        if(!signedUserEmail || !requestUserEmail || !bookTitle) {
+            res.json({error : true, message : "One or more parameters missing."})
+        } else {
+            // All valid parameters
+            // Get the borrowed books list of the signedUserEmail
+            // Remove the book with that bookTitle
+            try {
+                const signedUser = await User.findOne({email : signedUserEmail});
+                if(!signedUser) {
+                    res.json({error : true, message : "No user found."});
+                } else {
+                    let borrowedBooks = signedUser.borrowed;
+                    borrowedBooks = borrowedBooks.filter(book => {
+                        if(book.bookTitle !== bookTitle) {
+                            return book;
+                        }
+                    });
+                    signedUser.borrowed = borrowedBooks;
+                    // Book has been returned, make it available by making the 
+                    // tradeUser = "" and isRequested = false
+                    await signedUser.save();
+                    const userOwnerBook = await UserBooks.findOne({email : requestUserEmail, bookTitle});
+                    if(!userOwnerBook) {
+                        res.json({error : true, message : "No owner for the book"})
+                    } else {
+                        userOwnerBook.tradeUser = "";
+                        userOwnerBook.isRequested = false;
+                    }
+
+                    await signedUser.save();
+                    await userOwnerBook.save();
+                    res.json({error : false, message : "Book returned."})
+                }
+            } catch(err) {
+                console.log(err);
+                res.json({error : true, message : err});
+            }
+        }
     }
 }

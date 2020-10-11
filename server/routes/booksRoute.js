@@ -10,6 +10,7 @@ const router = express.Router();
 const isAuth = require('../middleware/isAuthenticated');
 // Book controller 
 const booksController = require('../controller/bookController');
+const bookController = require('../controller/bookController');
 
 
 // New Book Route
@@ -33,6 +34,9 @@ router.post('/incoming/respond', isAuth, booksController.respondRequest);
 
 // Get all borrowed books for a user
 router.post('/borrowed', isAuth, booksController.borrowedBooks);
+
+// Return a book
+router.post('/return', isAuth, bookController.returnBook);
 
 // Export the router handler;
 module.exports = router;
