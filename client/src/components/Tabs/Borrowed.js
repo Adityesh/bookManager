@@ -7,12 +7,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { LinearProgress } from '@material-ui/core';
-import TimerIcon from '@material-ui/icons/Timer';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
-import { green, blue } from '@material-ui/core/colors';
-
+import { LinearProgress, Tooltip, IconButton } from '@material-ui/core';
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import { green } from '@material-ui/core/colors'
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -46,20 +43,20 @@ export default () => {
 
     useEffect(() => {
         setLoading(true);
-        Promise.resolve(getOutgoingRequests());
+        Promise.resolve(getBorrowedBooks());
         setLoading(false);
     }, [])
 
 
     useEffect(() => {
-        getOutgoingRequests();
+        getBorrowedBooks();
     }, [searchBooks]);
 
 
-    const getOutgoingRequests = async () => {
+    const getBorrowedBooks = async () => {
         const user = JSON.parse(localStorage.getItem('user'));
         try {
-            const response = await fetch('/books/all/outgoing', {
+            const response = await fetch('/books/borrowed', {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',
@@ -73,11 +70,12 @@ export default () => {
 
             const result = await response.json();
             if (!result.error) {
-                if(result.requests.length === 0) {
+                if(result.books.length === 0) {
                     setSearchBooks([]);
                 } else {
-                    setSearchBooks(result.requests.reverse());
+                    setSearchBooks(result.books.reverse());
                 }
+                
 
             } else {
                 // Show snackbar and error
@@ -87,6 +85,37 @@ export default () => {
         } catch (err) {
             console.log(err);
         }
+    }
+
+    const handleReturn = async (book) => {
+        const {bookTitle, email} = book;
+        // const user = JSON.parse(localStorage.getItem('user'));
+        // try {
+        //     const response = await fetch('/books/incoming/respond', {
+        //         method : 'post',
+        //         headers : {
+        //             'Accept' : 'application/json',
+        //             'Content-Type' : 'application/json'
+        //         },
+        //         body : JSON.stringify({
+        //             flag : flag,
+        //             bookTitle,
+        //             requestUserEmail : email,
+        //             signedUserEmail : user.email
+        //         })
+        //     });
+
+        //     const result = await response.json();
+        //     if (!result.error) {
+
+        //     } else {
+        //         // Show snackbar and error
+
+
+        //     }
+        // } catch(err) {
+        //     console.log(err);
+        // }
     }
 
 
@@ -100,13 +129,13 @@ export default () => {
                 <Table stickyHeader className={classes.table} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <StyledTableCell>To</StyledTableCell>
+                            <StyledTableCell>From</StyledTableCell>
                             <StyledTableCell ></StyledTableCell>
                             <StyledTableCell >Book Title</StyledTableCell>
                             <StyledTableCell >Book Author</StyledTableCell>
                             <StyledTableCell >Publish Date</StyledTableCell>
                             <StyledTableCell >Page Count</StyledTableCell>
-                            <StyledTableCell >Status</StyledTableCell>
+                            <StyledTableCell ></StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -115,31 +144,20 @@ export default () => {
                                 <StyledTableCell component="th" scope="row">
                                     {book.username}
                                 </StyledTableCell>
-                                <StyledTableCell align="left"><img sizes='' alt="bookImg" src={book.bookUrl} height={60} width={30} /></StyledTableCell>
+                                <StyledTableCell align="left" ><img sizes='' src={book.bookUrl} height={60} width={30} /></StyledTableCell>
                                 <StyledTableCell align="left">{book.bookTitle}</StyledTableCell>
 
-                                <StyledTableCell align="left">{book.bookAuthor}</StyledTableCell>
+                                <StyledTableCell align="left" >{book.bookAuthor}</StyledTableCell>
                                 <StyledTableCell align="left">{book.bookDate}</StyledTableCell>
                                 <StyledTableCell align="left">{book.pageCount}</StyledTableCell>
                                 <StyledTableCell align="left">
-                                    <div style={{display : 'flex', alignItems : 'center', justifyContent : 'space-around'}}>
-                                    
-                                    {(() => {
-                                        if (book.status === 'Pending') {
-                                            return (
-                                                <TimerIcon style={{ color: blue[500], fontSize : 30 }}/>
-                                            )
-                                        } else if (book.status === 'Accepted') {
-                                            return (
-                                                <CheckCircleIcon fontSize={'small'} style={{ color: green[500],  fontSize : 30 }}/>
-                                            )
-                                        } else {
-                                            return (
-                                                <CancelIcon fontSize={'small'} color="secondary" style={{fontSize : 30 }}/>
-                                            )
-                                        }
-                                    })()}
-                                    {book.status}
+                                    <div style={{display : 'flex', alignItems : 'center', justifyContent : 'center'}}>
+                                        <Tooltip title="Return">
+                                            <IconButton aria-label="delete" onClick={() => handleReturn(book)}>
+                                                <KeyboardReturnIcon fontSize={'small'} style={{ color: green[500],  fontSize : 30 }}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                        
                                     </div>
                                 </StyledTableCell>
                             </StyledTableRow>

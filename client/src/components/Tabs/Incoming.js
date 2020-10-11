@@ -145,7 +145,7 @@ export default () => {
                                 <StyledTableCell component="th" scope="row">
                                     {book.username}
                                 </StyledTableCell>
-                                <StyledTableCell align="left" ><img sizes='' src={book.bookUrl} height={60} width={30} /></StyledTableCell>
+                                <StyledTableCell align="left" ><img alt="bookImg" sizes='' src={book.bookUrl} height={60} width={30} /></StyledTableCell>
                                 <StyledTableCell align="left">{book.bookTitle}</StyledTableCell>
 
                                 <StyledTableCell align="left" >{book.bookAuthor}</StyledTableCell>

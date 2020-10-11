@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom'
 import Masonry from 'react-masonry-css'
-import { useDispatch, useSelector } from 'react-redux'
 import 'react-tabs/style/react-tabs.css';
-import { Container, TextField, InputAdornment, LinearProgress, Divider } from '@material-ui/core';
-import { Button } from '@material-ui/core';
+import { TextField, InputAdornment, LinearProgress, Divider, Button } from '@material-ui/core';
 import { SearchSharp } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';

@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom'
-import Masonry from 'react-masonry-css'
 import { useDispatch, useSelector } from 'react-redux'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -10,19 +9,13 @@ import Books from '../Tabs/Books';
 import UserBooks from '../Tabs/UserBooks';
 import Incoming from '../Tabs/Incoming';
 import Outgoing from '../Tabs/Outgoing';
-
+import Borrowed from '../Tabs/Borrowed';
 
 
 
 export default (props) => {
     const isDark = useSelector(state => state.isDark);
-    const dispatch = useDispatch();
     const history = useHistory();
-    
-
-    
-
-
 
     if (props.logged) {
         return (
@@ -35,6 +28,9 @@ export default (props) => {
 </Button></Tab>
 <Tab><Button color="primary" style={{ color: isDark ? '#3f51b5' : 'black' }}>
                                 Your Books
+</Button></Tab>
+<Tab><Button color="primary" style={{ color: isDark ? '#3f51b5' : 'black' }}>
+                                Borrowed Books
 </Button></Tab>
 
                             <Tab><Button color="primary" style={{ color: isDark ? '#3f51b5' : 'black' }}>
@@ -50,6 +46,9 @@ export default (props) => {
                         </TabPanel>
                         <TabPanel forceRender>
                             <UserBooks />
+                        </TabPanel>
+                        <TabPanel forceRender>
+                            <Borrowed />
                         </TabPanel>
 
                         <TabPanel>

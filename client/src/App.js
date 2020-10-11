@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 import { useSelector, useDispatch } from 'react-redux'
-import { login, logout } from './actions/LogIn';
+import { logout } from './actions/LogIn';
 import { DARK, LIGHT } from './actions/theme';
 import {
   BrowserRouter as Router,
@@ -30,7 +30,6 @@ import Profile from './components/Profile/Profile'
 const App = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(state => {return state.isLoggedIn});
-  const history = useHistory();
 
   const isDark = useSelector(state =>  state.isDark);
 
@@ -60,7 +59,7 @@ const App = () => {
 
 
   return (
-    <div className={isDark ? 'bg-dark' + ' App' : 'bg-light' + ' App'} style={{ height: '100%'}}>
+    <div className={'App ' + (isDark ? 'bg-dark' : 'bg-light')} style={{ height: '100%'}}>
       <Router>
 
         <div>
@@ -71,6 +70,7 @@ const App = () => {
 
                 <>
                   <div style={{display : 'flex', alignItems : 'center', justifyContent : 'center'}}>
+                    
                     <IconButton style={{ color: isDark ? "white" : "black", marginRight: 10 }}>
                       <Link to="/home" style={{color: isDark ? "white" : "black"}}><LibraryBooksIcon/></Link>
                     </IconButton>

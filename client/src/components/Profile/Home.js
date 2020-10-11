@@ -106,7 +106,7 @@ export default (props) => {
     const history = useHistory();
     if (props.logged) {
         return (
-            <Container maxWidth="lg" className="home">
+            <Container maxWidth="xl" className="home">
                 <Masonry
                     style={{ marginTop: 20 }}
                     breakpointCols={breakpointColumnsObj}
