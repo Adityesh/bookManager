@@ -137,8 +137,6 @@ module.exports = {
         }
     },
 
-
-
     requestBook : async (req, res) => {
         // Get the email of both the person and the bookTitle of the book
         const { requestEmail, userEmail, bookTitle, requestUsername } = req.body;
@@ -213,7 +211,6 @@ module.exports = {
         }
     },
 
-
     getRequests : async (req, res) => {
         const {username, email} = req.body;
         
@@ -275,5 +272,64 @@ module.exports = {
                 res.json({error : true, message : "Internal server error."})
             }
         }
+    },
+
+    respondRequest = async (req, res) => {
+        const {flag, bookTitle, requestUserEmail, signedUserEmail} = req.body;
+        //requestUserEmail is the user requesting for the book
+        // signedUseremail is the user who has the book
+        // flag can be true or false
+        // true will accept the trade
+        // false will reject the trade
+
+        if(!flag || !bookTitle || !requestUserEMail || !signedUserEmail) {
+            res.json({error : true, message : "One or more parameters missing."})
+        } else {
+            // All parameters provided
+            // Find the signedUser in the database
+            const signedUser = await User.findOne({email : signedUserEmail});
+            const requestUser = await User.findOne({email : requestUserEmail});
+            if(!signedUser || !requestUser) {
+                res.json({error : true, message : "One or more users were not found"});
+            } else if(signedUser && requestUser) {
+                // Both the users are there in the database
+                // Take out the incoming request from the signed user if the flag is true
+                // and put the outgoind request in the requestUser's status to 'Accepted'
+                // else if flag is false
+                // put status to 'Rejected'
+
+                signedUser.incomingRequests.forEach(request => {
+                    if(request.bookTitle === bookTitle) {
+                        request.accepted = flag;
+                    }
+                })
+
+                
+
+                requestUser.outgoingRequests.forEach(request => {
+                    if(request.bookTitle === bookTitle) {
+                        request.accepted = flag;
+                        request.status = flag ? 'Accepted' : 'Rejected';
+
+                        flag ? requestUser.borrowed.push({
+                            userId : request.userId,
+                            username : request.username,
+                            email : request.email,
+                            bookTitle : request.bookTitle,
+                            bookAuthor : request.bookAuthor,
+                            bookDescription : request.bookDescription,
+                            bookUrl : request.bookUrl,
+                            pageCount : request.pageCount
+                        }) : null;
+                    }
+                })
+
+                await signedUser.save();
+                await requestUser.save();
+                res.json({error : false, message : "Request sent successfully."})
+                
+            }
+        }
+
     }
 }
