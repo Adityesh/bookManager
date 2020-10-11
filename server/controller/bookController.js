@@ -229,9 +229,12 @@ module.exports = {
                     // Get the requests array and send it
                     const requests = user.incomingRequests
                     if(requests.length === 0) {
-                        res.json({error : false, message : "No trade requests."})
+                        res.json({error : false, message : "No trade requests.", requests : []})
                     } else {
-                        res.json({error : false, message : "Success", requests : requests});
+                        const requestSend = requests.filter(request => {
+                            return request.status === 'Pending';
+                        })
+                        res.json({error : false, message : "Success", requests : requestSend});
                     }
                 }
 
@@ -261,7 +264,7 @@ module.exports = {
                     // Get the requests array and send it
                     const requests = user.outgoingRequests;
                     if(requests.length === 0) {
-                        res.json({error : false, message : "No trade requests."})
+                        res.json({error : false, message : "No trade requests.", requests : []})
                     } else {
                         res.json({error : false, message : "Success", requests : requests});
                     }
@@ -274,7 +277,7 @@ module.exports = {
         }
     },
 
-    respondRequest = async (req, res) => {
+    respondRequest : async (req, res) => {
         const {flag, bookTitle, requestUserEmail, signedUserEmail} = req.body;
         //requestUserEmail is the user requesting for the book
         // signedUseremail is the user who has the book
@@ -282,7 +285,7 @@ module.exports = {
         // true will accept the trade
         // false will reject the trade
 
-        if(!flag || !bookTitle || !requestUserEMail || !signedUserEmail) {
+        if(!bookTitle || !requestUserEmail || !signedUserEmail) {
             res.json({error : true, message : "One or more parameters missing."})
         } else {
             // All parameters provided
@@ -301,8 +304,21 @@ module.exports = {
                 signedUser.incomingRequests.forEach(request => {
                     if(request.bookTitle === bookTitle) {
                         request.accepted = flag;
+                        request.status = flag ? 'Accepted' : 'Rejected';
                     }
+
                 })
+
+                if(flag === false) {
+                    // If rejected make the book available again
+                    const book = await UserBooks.findOne({email : signedUserEmail, bookTitle});
+                    book.tradeUser = "";
+                    book.isRequested = false;
+                    await book.save();
+                }
+
+                
+                
 
                 
 
@@ -317,6 +333,7 @@ module.exports = {
                             email : request.email,
                             bookTitle : request.bookTitle,
                             bookAuthor : request.bookAuthor,
+                            bookDate : request.bookDate,
                             bookDescription : request.bookDescription,
                             bookUrl : request.bookUrl,
                             pageCount : request.pageCount
@@ -331,5 +348,24 @@ module.exports = {
             }
         }
 
+    },
+
+
+    borrowedBooks : async (req, res) => {
+        const {username, email} = req.body;
+
+        if(!username || !email) {
+            res.json({error : true, message : "One or more parameters missing."})
+        } else {
+            // All parameters provided
+            const user = await User.findOne({username, email});
+            if(!user) {
+                res.json({error : true, message : 'No user found'});
+            } else {
+                // Valid user
+                // Return the list of borrowed books
+                res.json({error : false, message : 'Books found', books : user.borrowed.length === 0 ? [] : user.borrowed});
+            }
+        }
     }
 }

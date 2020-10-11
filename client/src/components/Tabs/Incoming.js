@@ -70,16 +70,51 @@ export default () => {
             });
 
             const result = await response.json();
-            console.log(result);
             if (!result.error) {
-                setSearchBooks(result.requests.reverse());
+                if(result.requests.length === 0) {
+                    setSearchBooks([]);
+                } else {
+                    setSearchBooks(result.requests.reverse());
+                }
+                
+
+            } else {
+                // Show snackbar and error
+                setSearchBooks([]);
+
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const handleRequest = async (book, flag) => {
+        const {bookTitle, email} = book;
+        const user = JSON.parse(localStorage.getItem('user'));
+        try {
+            const response = await fetch('/books/incoming/respond', {
+                method : 'post',
+                headers : {
+                    'Accept' : 'application/json',
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify({
+                    flag : flag,
+                    bookTitle,
+                    requestUserEmail : email,
+                    signedUserEmail : user.email
+                })
+            });
+
+            const result = await response.json();
+            if (!result.error) {
 
             } else {
                 // Show snackbar and error
 
 
             }
-        } catch (err) {
+        } catch(err) {
             console.log(err);
         }
     }
@@ -95,7 +130,7 @@ export default () => {
                 <Table stickyHeader className={classes.table} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <StyledTableCell>To</StyledTableCell>
+                            <StyledTableCell>From</StyledTableCell>
                             <StyledTableCell ></StyledTableCell>
                             <StyledTableCell >Book Title</StyledTableCell>
                             <StyledTableCell >Book Author</StyledTableCell>
@@ -119,12 +154,12 @@ export default () => {
                                 <StyledTableCell align="left">
                                     <div style={{display : 'flex', alignItems : 'center', justifyContent : 'center'}}>
                                         <Tooltip title="Accept">
-                                            <IconButton aria-label="delete">
+                                            <IconButton aria-label="delete" onClick={() => handleRequest(book, true)}>
                                                 <CheckIcon fontSize={'small'} style={{ color: green[500],  fontSize : 30 }}/>
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Reject">
-                                            <IconButton aria-label="delete">
+                                            <IconButton aria-label="delete" onClick={() => handleRequest(book, false)}>
                                                 <BlockIcon fontSize={'small'} color="secondary" style={{ fontSize : 30 }}/>
                                             </IconButton>
                                         </Tooltip>

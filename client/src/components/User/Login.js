@@ -40,7 +40,6 @@ export default () => {
             })
 
             const result = await response.json();
-            console.log(result)
             if(result.error) {
                 setLoading(false);
                 setErr(result.message);

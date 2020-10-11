@@ -65,7 +65,6 @@ export default (props) => {
                 })
             });
             const result = await response.json();
-            console.log(result);
             if (!result.error) {
                 setBooks(result.books);
             } else {
@@ -95,7 +94,6 @@ export default (props) => {
                 body : JSON.stringify(body)
             })
             const result = await response.json();
-            console.log(result);
         } catch(err) {
             // Display a snackbar later
             console.log(err);

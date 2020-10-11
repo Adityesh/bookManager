@@ -72,13 +72,16 @@ export default () => {
             });
 
             const result = await response.json();
-            console.log(result);
             if (!result.error) {
-                setSearchBooks(result.requests.reverse());
+                if(result.requests.length === 0) {
+                    setSearchBooks([]);
+                } else {
+                    setSearchBooks(result.requests.reverse());
+                }
 
             } else {
                 // Show snackbar and error
-
+                setSearchBooks([]);
 
             }
         } catch (err) {
