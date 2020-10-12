@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Masonry from 'react-masonry-css'
 import 'react-tabs/style/react-tabs.css';
-import { LinearProgress, Divider } from '@material-ui/core';
+import { LinearProgress, Divider, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -38,7 +38,9 @@ const Books = () => {
     const classes = useStyles();
     const [isLoading, setLoading] = useState(false);
     const [searchBooks, setSearchBooks] = useState([]);
-
+    const [open, setOpen] = useState(false);
+    const [openErr, setOpenErr] = useState(false);
+    const [err, setErr] = useState('');
 
 
     const getUserBooks = async () => {
@@ -63,11 +65,20 @@ const Books = () => {
 
             } else {
                 // Show snackbar and error
-                
+                setErr(result.message);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
 
             }
         } catch (err) {
-            console.log(err);
+            setSearchBooks([]);
+                setErr(err);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
         }
     }
 
@@ -135,7 +146,11 @@ const Books = () => {
                 </Masonry>
 
             </div>
+            <Snackbar open={open} autoHideDuration={6000} anchorOrigin={{vertical : 'bottom', horizontal : 'center'}} message="Login success">
+            </Snackbar>
 
+            <Snackbar open={openErr} autoHideDuration={6000} message={err}>
+            </Snackbar>
 
         </div>
     )

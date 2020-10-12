@@ -7,7 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { LinearProgress, Tooltip, IconButton } from '@material-ui/core';
+import { LinearProgress, Tooltip, IconButton, Snackbar } from '@material-ui/core';
 import BlockIcon from '@material-ui/icons/Block';
 import CheckIcon from '@material-ui/icons/Check';
 import { green } from '@material-ui/core/colors'
@@ -41,7 +41,9 @@ const useStyles = makeStyles({
 export default () => {
     const [isLoading, setLoading] = useState(false);
     const [searchBooks, setSearchBooks] = useState([]);
-
+    const [open, setOpen] = useState(false);
+    const [openErr, setOpenErr] = useState(false);
+    const [err, setErr] = useState('');
     useEffect(() => {
         setLoading(true);
         Promise.resolve(getIncomingRequests());
@@ -81,10 +83,19 @@ export default () => {
             } else {
                 // Show snackbar and error
                 setSearchBooks([]);
+                setErr("No Books found");
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
 
             }
         } catch (err) {
-            console.log(err);
+            setErr(err);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
         }
     }
 
@@ -111,11 +122,19 @@ export default () => {
 
             } else {
                 // Show snackbar and error
-
+                setErr(result.message);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
 
             }
         } catch(err) {
-            console.log(err);
+            setErr(err);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
         }
     }
 
@@ -170,6 +189,11 @@ export default () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Snackbar open={open} autoHideDuration={6000} anchorOrigin={{vertical : 'bottom', horizontal : 'center'}} message="Login success">
+            </Snackbar>
+
+            <Snackbar open={openErr} autoHideDuration={6000} message={err}>
+            </Snackbar>
         </div>
     )
 }

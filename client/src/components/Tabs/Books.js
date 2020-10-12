@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Masonry from 'react-masonry-css'
 import 'react-tabs/style/react-tabs.css';
-import { TextField, InputAdornment, LinearProgress, Divider, Button } from '@material-ui/core';
+import { TextField, InputAdornment, LinearProgress, Divider, Button, Snackbar } from '@material-ui/core';
 import { SearchSharp } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -43,6 +43,9 @@ const Books = () => {
     const [value, setValue] = useState('');
     const [searchBooks, setSearchBooks] = useState([]);
     const [btnDisable, setBtnDisable] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [openErr, setOpenErr] = useState(false);
+    const [err, setErr] = useState('');
 
 
     const handleChange = (value) => {
@@ -57,16 +60,36 @@ const Books = () => {
             const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${value}&key=${API_KEY}`)
             const result = await response.json();
             const books = await result.items;
-            setLoading(false);
-            if(!books) {
-                setSearchBooks('No books found');
+            if(result.error) {
+                setLoading(false);
+                setErr(result.message);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
             } else {
-                setSearchBooks(books);
+                if(!books) {
+                    setSearchBooks('No books found');
+                    setLoading(false);
+
+                } else {
+                    setSearchBooks(books);
+                    setLoading(false);
+
+                }
+
             }
             
             
+            
         } catch(err) {
-            console.log(err);
+            
+            setLoading(false);
+                setErr(err);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
         }
     }
 
@@ -180,7 +203,11 @@ const Books = () => {
                 </Masonry>
 
             </div>
-            
+            <Snackbar open={open} autoHideDuration={6000} anchorOrigin={{vertical : 'bottom', horizontal : 'center'}} message="Login success">
+            </Snackbar>
+
+            <Snackbar open={openErr} autoHideDuration={6000} message={err}>
+            </Snackbar>
 
         </div>
     )

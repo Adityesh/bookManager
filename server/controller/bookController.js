@@ -326,18 +326,31 @@ module.exports = {
                     if(request.bookTitle === bookTitle) {
                         request.accepted = flag;
                         request.status = flag ? 'Accepted' : 'Rejected';
+                        let tag = false;
+                        for(let i = 0; i < requestUser.borrowed.length; i++) {
+                            
+                            if(requestUser.borrowed[i].bookTitle === bookTitle) {
+                                tag = true;
+                                break;
+                            }
+                        }
 
-                        flag ? requestUser.borrowed.push({
-                            userId : request.userId,
-                            username : request.username,
-                            email : request.email,
-                            bookTitle : request.bookTitle,
-                            bookAuthor : request.bookAuthor,
-                            bookDate : request.bookDate,
-                            bookDescription : request.bookDescription,
-                            bookUrl : request.bookUrl,
-                            pageCount : request.pageCount
-                        }) : null;
+                        if(flag) {
+                            if(!tag) {
+                                requestUser.borrowed.push({
+                                    userId : request.userId,
+                                    username : request.username,
+                                    email : request.email,
+                                    bookTitle : request.bookTitle,
+                                    bookAuthor : request.bookAuthor,
+                                    bookDate : request.bookDate,
+                                    bookDescription : request.bookDescription,
+                                    bookUrl : request.bookUrl,
+                                    pageCount : request.pageCount
+                                })
+                            }
+                        } 
+
                     }
                 })
 
@@ -388,9 +401,9 @@ module.exports = {
                 } else {
                     let borrowedBooks = signedUser.borrowed;
                     borrowedBooks = borrowedBooks.filter(book => {
-                        if(book.bookTitle !== bookTitle) {
-                            return book;
-                        }
+                        return book.bookTitle !== bookTitle;
+                            
+                        
                     });
                     signedUser.borrowed = borrowedBooks;
                     // Book has been returned, make it available by making the 

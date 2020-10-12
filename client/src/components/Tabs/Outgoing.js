@@ -7,7 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress, Snackbar } from '@material-ui/core';
 import TimerIcon from '@material-ui/icons/Timer';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -43,7 +43,9 @@ const useStyles = makeStyles({
 export default () => {
     const [isLoading, setLoading] = useState(false);
     const [searchBooks, setSearchBooks] = useState([]);
-
+    const [open, setOpen] = useState(false);
+    const [openErr, setOpenErr] = useState(false);
+    const [err, setErr] = useState('');
     useEffect(() => {
         setLoading(true);
         Promise.resolve(getOutgoingRequests());
@@ -82,10 +84,19 @@ export default () => {
             } else {
                 // Show snackbar and error
                 setSearchBooks([]);
+                setErr("No books found");
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
 
             }
         } catch (err) {
-            console.log(err);
+            setErr(err);
+                setOpenErr(true);
+                setTimeout(() => {
+                    setOpenErr(false);
+                }, 2000)
         }
     }
 
@@ -147,6 +158,11 @@ export default () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Snackbar open={open} autoHideDuration={6000} anchorOrigin={{vertical : 'bottom', horizontal : 'center'}} message="Login success">
+            </Snackbar>
+
+            <Snackbar open={openErr} autoHideDuration={6000} message={err}>
+            </Snackbar>
         </div>
     )
 }
