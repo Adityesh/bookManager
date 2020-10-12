@@ -17,17 +17,18 @@ dotenv.config();
 const API_KEY = process.env.REACT_APP_API_KEY;
 const useStyles = makeStyles({
     root: {
-        maxWidth: 345,
-        minHeight : 400
+        maxWidth: 400,
+        minHeight: 400
     },
     media: {
-        height: 150,
+        height: 300,
     },
 
-    content : {
-        height : 200
+    content: {
+        height: 150
     }
 });
+
 
 
 const breakpointColumnsObj = {
@@ -153,14 +154,17 @@ const Books = () => {
                 onChange={e => handleChange(e.target.value)}
             />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Button variant="contained" color="primary" style={{ color: 'white', alignSelf: 'center', marginTop: 5 }} onClick={handleSearch}>SEARCH</Button>
+                <Button variant="contained" color="primary" style={{ color: 'white', alignSelf: 'center', marginTop: 5, marginBottom : 5 }} onClick={handleSearch}>SEARCH</Button>
 
             </div>
             <LinearProgress color="primary" style={{ display: isLoading ? 'block' : 'none' }} />
             <div>
-                <h4>Retrieved Books</h4>
+                <Typography variant="h5" gutterBottom style={{margin : '5px 0'}}>
+                            Search Results
+                </Typography>
                 <Divider />
                 <Masonry
+                style={{marginTop : 10, marginRight : 10}}
                     breakpointCols={breakpointColumnsObj}
                     className="my-masonry-grid"
                     columnClassName="my-masonry-grid_column"

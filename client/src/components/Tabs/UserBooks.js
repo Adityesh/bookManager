@@ -14,15 +14,15 @@ dotenv.config();
 
 const useStyles = makeStyles({
     root: {
-        maxWidth: 345,
+        maxWidth: 400,
         minHeight: 400
     },
     media: {
-        height: 150,
+        height: 300,
     },
 
     content: {
-        height: 200
+        height: 150
     }
 });
 
@@ -105,9 +105,12 @@ const Books = () => {
 
             <LinearProgress color="primary" style={{ display: isLoading ? 'block' : 'none' }} />
             <div>
-                <h4>Your Books</h4>
+                <Typography variant="h5" gutterBottom style={{margin : '5px 0'}}>
+                        Books for you
+                </Typography>
                 <Divider />
                 <Masonry
+                style={{marginTop : 10}}
                     breakpointCols={breakpointColumnsObj}
                     className="my-masonry-grid"
                     columnClassName="my-masonry-grid_column"

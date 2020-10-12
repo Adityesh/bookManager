@@ -65,7 +65,7 @@ export default (props) => {
 
         )
     } else {
-        history.push('/login')
+        history.push('/')
         return null;
 
     }

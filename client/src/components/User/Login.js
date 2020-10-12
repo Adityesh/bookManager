@@ -124,6 +124,7 @@ export default () => {
                                     </div>
                                     
                                     <div style={{display : 'flex', alignItems : 'center', justifyContent : 'center', marginBottom : 10}}>
+                                    <Button variant="contained" color="secondary" style={{marginRight : 10}} onClick={() => history.push('/')}>CANCEL</Button>
                                         <Button variant="contained" color="primary" style={{marginRight : 10}} onClick={resetForm}>RESET</Button>
                                         <Button variant="contained" color="primary" style={{marginRight : 10}} type="submit">LOGIN</Button>
                                     </div>

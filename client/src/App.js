@@ -19,18 +19,20 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
 import Button from '@material-ui/core/Button';
 import Login from './components/User/Login';
 import Register from './components/User/Register'
 import Home from './components/Profile/Home';
 import Landing from './components/User/Landing';
 import Profile from './components/Profile/Profile'
+import Settings from './components/Profile/Settings'
 
 
 const App = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(state => {return state.isLoggedIn});
-
+  const history = useHistory();
   const isDark = useSelector(state =>  state.isDark);
 
   const changeTheme = () => {
@@ -63,9 +65,11 @@ const App = () => {
       <Router>
 
         <div>
-          <AppBar position="static" color={'primary'}>
-            <Toolbar style={{ display: 'flex', alignItem: 'center', justifyContent: 'flex-end' }}>
-
+            
+            <Toolbar style={{ display: 'flex', alignItem: 'center', justifyContent: 'space-between' }}>
+              <div>
+              <img src="logo.png"/>
+              </div>
               {isLoggedIn ?
 
                 <>
@@ -76,6 +80,9 @@ const App = () => {
                     </IconButton>
                     <IconButton style={{ color: isDark ? "white" : "black", marginRight: 10 }} >
                       <Link to="/profile" style={{color: isDark ? "white" : "black"}}><AccountBoxIcon/></Link>
+                    </IconButton>
+                    <IconButton style={{ color: isDark ? "white" : "black", marginRight: 10 }} >
+                      <Link to="/settings" style={{color: isDark ? "white" : "black"}}><SettingsApplicationsIcon/></Link>
                     </IconButton>
                     <IconButton style={{ color: isDark ? "white" : "black", marginRight: 10, paddingBottom : 10 }} component="span" onClick={handleLogOut}>
                       <ExitToAppIcon/>
@@ -101,14 +108,20 @@ const App = () => {
                 {isDark ? <Brightness7Icon /> : <Brightness4Icon />}
               </IconButton>
             </Toolbar>
-          </AppBar>
+          
         </div>
 
         
 
           <Switch>
+            <Route exact path="/">
+              <Landing />
+            </Route>
             <Route path="/profile">
               <Profile logged={isLoggedIn}/>
+            </Route>
+            <Route path="/settings">
+              <Settings logged={isLoggedIn}/>
             </Route>
             <Route path="/login">
               <Login />

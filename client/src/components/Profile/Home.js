@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom'
 import Masonry from 'react-masonry-css'
 import 'react-tabs/style/react-tabs.css';
-import { Container, Button} from '@material-ui/core';
+import { Container, Button, Divider} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -13,15 +13,15 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
     root: {
-        maxWidth: 345,
+        maxWidth: 400,
         minHeight: 400
     },
     media: {
-        height: 150,
+        height: 300,
     },
 
     content: {
-        height: 200
+        height: 150
     }
 });
 
@@ -107,6 +107,10 @@ export default (props) => {
     if (props.logged) {
         return (
             <Container maxWidth="xl" className="home">
+                <Typography variant="h4" gutterBottom style={{marginTop : 5}}>
+                    Books available for trade
+                </Typography>
+                <Divider style={{color : 'white'}} variant="inset" light/>
                 <Masonry
                     style={{ marginTop: 20 }}
                     breakpointCols={breakpointColumnsObj}
@@ -142,7 +146,7 @@ export default (props) => {
                                     </CardContent>
                                 </CardActionArea>
                                 <CardActions style={{ display: 'flex', alignItem: 'center', justifyContent: 'center' }}>
-                                    <Button size="large" variant="contained" color="primary"  onClick={() => handleRequestBook(item)}>
+                                    <Button size="large" variant="outlined" color="primary"  onClick={() => handleRequestBook(item)}>
                                         Request from {item.username}
                             </Button>
                                 </CardActions>
@@ -154,7 +158,7 @@ export default (props) => {
             </Container>
         )
     } else {
-        history.push('/login')
+        history.push('/')
         return null;
 
     }
