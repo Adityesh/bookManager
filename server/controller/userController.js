@@ -52,6 +52,74 @@ module.exports = {
         }
     },
 
+    updateBio : async (req, res) => {
+        const {updatedBio, username, email} = req.body;
+        if(!updatedBio || !username || !email) {
+            res.json({error : true, message : "One or more parameters missing"});
+        } else {
+            // All parameters valid
+            try {
+                const user = await User.findOne({username, email});
+                if(!user) {
+                    res.json({error : true, message : "No user with that email or username found."})
+                } else {
+                    // User is valid
+                    user.bio = updatedBio;
+                    await user.save();
+                    req.session.destroy();
+                    res.clearCookie('connect.sid')
+                    res.json({error : false, message : "Bio updated succesfully."})
+                }
+            } catch(err) {
+                console.log(err);
+                res.json({error : true, message : "Internal server error."})
+            }
+        }
+    },
+
+    changePassword : async (req, res) => {
+        const {username, email, oldPass, newPass} = req.body;
+        if(!username || !email || !oldPass || !newPass) {
+            res.json({error : true, message : "One or more parameters are missing"})
+        } else {
+            // All parameters are valid
+            if(oldPass === newPass) res.json({error : true, message : "New Password cannot be same as old Password"});
+            else {
+                try {
+                    const user = await User.findOne({email, username});
+                    if(!user) {
+                        res.json({error : true, message : "No user with that email or username found"});
+                    } else {
+                        // User is valid
+                        // Check if the oldPass is same as the password in the database.
+                        const isSame = await bcrypt.compare(oldPass, user.password);
+                        if(isSame) {
+                            // Passwords are same
+                            // Check if new password is atleast 6 chars long
+                            if(newPass.length <= 5) {
+                                res.json({error : true, message : "New password must be atleast 6 characters long."})
+                            } else {
+                                const hashedPass = await bcrypt.hash(newPass, 10);
+                                user.password = hashedPass;
+                                await user.save();
+                                req.session.destroy();
+                                res.clearCookie('connect.sid')
+                                res.json({error : false, message : "Password updated successfully."})
+                            }
+                        } else {
+                            // Passwords don't match
+                            res.json({error : true, message : "Incorrect password."})
+                        }
+                    }
+                } catch(err) {
+                    console.log(err);
+                    res.json({error : true, message : "Internal server error"})
+                }
+            }
+            
+        }
+    },
+
     logOut : async (req, res) => {
         req.session.destroy();
         res.clearCookie('connect.sid')

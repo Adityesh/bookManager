@@ -38,9 +38,11 @@ router.get('/failure', (req, res) => {
 
 router.get('/logout', isAuth,  userController.logOut);
 
-router.get('/getBooks', isAuth, (req, res) => {
-    res.json('data');
-})
+// Change the bio of the user
+router.post('/bio/update', isAuth, userController.updateBio);
+
+// Change the password of the user
+router.post('/password/update', isAuth, userController.changePassword);
 
 
 // Export the router handler;

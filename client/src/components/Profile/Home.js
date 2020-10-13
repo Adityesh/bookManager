@@ -158,6 +158,7 @@ export default (props) => {
             </Container>
         )
     } else {
+        localStorage.clear();
         history.push('/')
         return null;
 
