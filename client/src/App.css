@@ -107,3 +107,30 @@ a {
   .my-masonry-grid_column3 > div { /* change div to reference your elements you put in <Masonry> */
     margin-bottom: 30px;
   }
+
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 35px;
+    background-color: rgb(39, 39, 39);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: cursive;
+  }
+
+  a {
+    text-decoration: none;
+    color: white;
+    text-transform: uppercase;
+    padding-left: 5px;
+    color: chartreuse;
+  }
+
+  .heart {
+    color: red;
+    padding:0 5px;
+  }

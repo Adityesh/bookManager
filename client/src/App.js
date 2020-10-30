@@ -27,6 +27,7 @@ import Home from './components/Profile/Home';
 import Landing from './components/User/Landing';
 import Profile from './components/Profile/Profile'
 import Settings from './components/Profile/Settings'
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 
 const App = () => {
@@ -139,6 +140,11 @@ const App = () => {
 
 
       </Router>
+      <div className="footer">
+        Made with 
+        <FavoriteIcon fontSize="20" className="heart"/> by 
+        <a href="https://github.com/Adityesh" target="_blank"> Adityesh</a>
+        </div>
     </div>
   );
 }
