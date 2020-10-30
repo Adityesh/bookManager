@@ -47,5 +47,8 @@ Google Books API was used to provide the user the ability to search for books an
 ## Credits
 Inspired by [project](https://manage-a-book-trading-club.freecodecamp.rocks/books) 
 
+## Live Demo Video
+[Video](https://www.youtube.com/watch?v=k1gLhwjv5LQ)
+
 ## License
 MIT © [Adityesh Mishra](https://github.com/Adityesh)
