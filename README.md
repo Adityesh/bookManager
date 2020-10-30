@@ -7,7 +7,7 @@ This project was build as part of the freecodecamp curriculum. Moreover this was
 
 ## Screenshots
 ### Landing Page
-![Landing Page](https://i.lensdump.com/i/0VnQcx.png =500x)
+![alt text](https://i.lensdump.com/i/0VnQcx.png)
 
 ## Tech/framework used
 
