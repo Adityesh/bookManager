@@ -6,8 +6,8 @@ Also, allows users to request books from other users and trade books with each o
 This project was build as part of the freecodecamp curriculum. Moreover this was made so that I would get a better grasp on how full stack applications are build end-to-end.
 
 ## Screenshots
-### Landing Page
-![alt text](https://i.lensdump.com/i/0VnQcx.png)
+
+[Album](https://lensdump.com/a/jlide)
 
 ## Tech/framework used
 
